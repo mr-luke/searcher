@@ -58,7 +58,7 @@ To use `Searcher` you need to setup your `Searchable` Eloquent model before. Add
  */
 public static function getSearchableConfig() : array
 {
-	return [
+    return [
     	'filter' => ['first' => 'firstName'],
         'query' => ['first', 'last'],
         'sort => ['age' => 'age'],
