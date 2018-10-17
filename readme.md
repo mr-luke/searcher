@@ -129,4 +129,4 @@ This method allows you to get paginated collection of models. If parameters are 
 
 ## Plans
 
-Full text contextual searching.
+To be continue...
