@@ -1,12 +1,13 @@
 Searcher - Laravel Eloquent query Package.
 ==============
 
-This package is responsible for converting OData(-like) URL Query into SQL query on the top of Eloquent Builder.
+This package is responsible for converting OData(-like) URL Query into SQL query on top of the Eloquent Builder.
 
 * [Getting Started](#getting-started)
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Usage](#usage)
+* [Plans](#plans)
 
 ## Getting Started
 
@@ -58,7 +59,7 @@ To use `Searcher` you need to setup your `Searchable` Eloquent model before. Add
  */
 public static function getSearchableConfig() : array
 {
-    return [
+	return [
     	'filter' => ['first' => 'firstName'],
         'query' => ['first', 'last'],
         'sort => ['age' => 'age'],
@@ -72,7 +73,8 @@ public static function getSearchableConfig() : array
 
 `['first' => 'firstName']` is this example `first` is public key (URL) and `firstName` is an Eloquent attribute.
 
-You can also use `Mrluke\Searche\Traits\Searchable` that gives ability to read configuration from class property instead of function.
+You can also use `Mrluke\Searcher\Traits\Searchable` that gives ability to read configuration from class property instead of function.
+
 ```php
 /**
  * Searcher configuration.
@@ -90,8 +92,41 @@ You can access `Searcher` via Facade `Mrluke\Searcher\Facades\Searcher`. All you
 $collection = Searcher::setModel(User::class)->get();
 ```
 
-##### setModel($model, $builder = null)
+##### setModel($model, `Builder` $builder = null) : `self`
 
 This is main method of package. It is required to perform any action.
 
-TO BE CONTINUE...
+* `$model - string|array`
+* `$builder - Illuminate\Database\Eloquent\Builder|null`
+
+This method provides ability to setup `Searcher` is tree different ways.
+
+1. Default Model `searchableConfig` with no additional SQL requirements.
+2. Default Model `searchableConfig` with custom `Builder` (eg: `whereIn` condition not depended on Url query)
+3. Custom `searchableConfig` passed as 1st argument with Model `Builder` instance.
+
+By default `Seracher` uses `Illuminate\Http\Request::all()` as an input array.
+
+##### setQuery(`array` $inputs) : `self`
+
+This method allows you to set own inputs array instead of using default `Illuminate\Http\Request::all()`
+
+##### setOptions(`array` $options) : `self`
+
+This method allows you to override default `Searcher` configuration. If you'd like to check all available options see [config file](config/searcher.php).
+
+##### getBuilder() : `Builder`
+
+This method returns prepared Builder instance for given inputs.
+
+##### get() : `Collection`
+
+This method returns `Illuminate\Support\Collection` for given inputs. If your configuration has property `auto_pagination = true`, it will perform pagination based on `limit` & `offset` inputs.
+
+##### paginate(`int` $limit = null, `int` $offset = null) : `mixed`
+
+This method allows you to get paginated collection of models. If parameters are not set, method will get them automatically from the inputs. If your configuration has property `api_mode = true`, method will return `Illuminate\Support\Collection` otherwise you will get `Illuminate\Pagination\LengthAwarePaginator`.
+
+## Plans
+
+Full text contextual searching.
