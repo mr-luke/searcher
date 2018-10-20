@@ -1,6 +1,10 @@
 Searcher - Laravel Eloquent query Package.
 ==============
 
+[![Latest Stable Version](https://poser.pugx.org/mr-luke/searcher/v/stable)](https://packagist.org/packages/mr-luke/searcher)
+[![Total Downloads](https://poser.pugx.org/mr-luke/searcher/downloads)](https://packagist.org/packages/mr-luke/searcher)
+[![License](https://poser.pugx.org/mr-luke/searcher/license)](https://packagist.org/packages/mr-luke/searcher)
+
 This package is responsible for converting OData(-like) URL Query into SQL query on top of the Eloquent Builder.
 
 * [Getting Started](#getting-started)
@@ -129,4 +133,4 @@ This method allows you to get paginated collection of models. If parameters are 
 
 ## Plans
 
-To be continue...
+To be continued...
