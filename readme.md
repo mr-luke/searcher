@@ -106,8 +106,17 @@ This is main method of package. It is required to perform any action.
 This method provides ability to setup `Searcher` is tree different ways.
 
 1. Default Model `searchableConfig` with no additional SQL requirements.
+```php
+setModel(string Model::class)
+```
 2. Default Model `searchableConfig` with custom `Builder` (eg: `whereIn` condition not depended on Url query)
+```php
+setModel(string Model::class, Builder $builder)
+```
 3. Custom `searchableConfig` passed as 1st argument with Model `Builder` instance.
+```php
+setModel(array $searchableConfig, Builder $builder)
+```
 
 By default `Seracher` uses `Illuminate\Http\Request::all()` as an input array.
 
