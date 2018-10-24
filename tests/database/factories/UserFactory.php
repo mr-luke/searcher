@@ -14,24 +14,23 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(Mrluke\Searcher\Tests\Models\User::class, function (Faker $faker) {
-
-    $gender = (rand(1,100) % 2) ? 'male' : 'female';
+    $gender = (rand(1, 100) % 2) ? 'male' : 'female';
 
     $first = $faker->firstName($gender);
     $last = $faker->lastName($gender);
 
     return [
-        'name' => str_slug($first .' '. $last .' '.str_random(5)),
+        'name'  => str_slug($first.' '.$last.' '.str_random(5)),
         'email' => $faker->unique()->safeEmail,
 
         'country' => 'Poland',
-        'city' => $faker->city,
+        'city'    => $faker->city,
         'address' => $faker->streetName,
 
-        'first' => $first,
-        'last' => $last,
+        'first'  => $first,
+        'last'   => $last,
         'gender' => $gender,
-        'age' => rand(18, 60),
-        'job' => $faker->jobTitle,
+        'age'    => rand(18, 60),
+        'job'    => $faker->jobTitle,
     ];
 });

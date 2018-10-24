@@ -2,20 +2,22 @@
 
 namespace Mrluke\Searcher;
 
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 /**
  * Searcher is a package for Laravel's Eloquent that perform
  * quering, filtering & sorting based on REST Url query.
  *
  * @author    Łukasz Sitnicki (mr-luke)
+ *
  * @link      http://github.com/mr-luke/searcher
  *
  * @category  Laravel
- * @package   mr-luke/searcher
+ *
  * @license   MIT
+ *
  * @version   1.0.0
  */
 class Searcher
@@ -30,7 +32,7 @@ class Searcher
     /**
      * Determine if all query has been already processed.
      *
-     * @var boolean
+     * @var bool
      */
     private $built = false;
 
@@ -49,7 +51,7 @@ class Searcher
     private $inputs;
 
     /**
-     * Integrator connects
+     * Integrator connects.
      *
      * @var string
      */
@@ -57,7 +59,7 @@ class Searcher
 
     /**
      * Allowed Operators with mapping.
-     * Resource: OData logical operators
+     * Resource: OData logical operators.
      *
      * @var array
      */
@@ -91,7 +93,6 @@ class Searcher
      */
     private $query = [];
 
-
     public function __construct(array $options)
     {
         $this->options = $options;
@@ -120,7 +121,9 @@ class Searcher
      */
     public function getBuilder() : Builder
     {
-        if (! $this->built) $this->process();
+        if (!$this->built) {
+            $this->process();
+        }
 
         return $this->b;
     }
@@ -132,7 +135,9 @@ class Searcher
      */
     public function getQueryMap() : array
     {
-        if (! $this->built) $this->process();
+        if (!$this->built) {
+            $this->process();
+        }
 
         return $this->query;
     }
@@ -140,26 +145,33 @@ class Searcher
     /**
      * Return paginated listing of records.
      *
-     * @param  int|null  $limit
-     * @param  int|null  $offset
+     * @param int|null $limit
+     * @param int|null $offset
+     *
      * @return mixed
      */
     public function paginate(int $limit = null, int $offset = null)
     {
-        if (is_null($limit)) $limit = $this->getLimit($thi->getOption('limit'));
-        if (is_null($offset)) $offset = $this->getOffset();
+        if (is_null($limit)) {
+            $limit = $this->getLimit($thi->getOption('limit'));
+        }
+        if (is_null($offset)) {
+            $offset = $this->getOffset();
+        }
 
         if ($this->getOption('api_mode')) {
             return $this->process()->offset($offset)->limit($limit)->get();
         }
+
         return $this->process()->paginate($limit, ['*'], 'page', $offset);
     }
 
     /**
      * Set model, it's configuration and optionaly builder.
      *
-     * @param  string|array $model
-     * @param  null|Illuminate\Database\Eloquent\Builder $builder
+     * @param string|array                              $model
+     * @param null|Illuminate\Database\Eloquent\Builder $builder
+     *
      * @return self
      */
     public function setModel($model, Builder $builder = null) : self
@@ -169,19 +181,20 @@ class Searcher
         // an array of \Illuminate\Http\Request::class.
 
         if (is_array($model)) {
-            if (! $builder instanceof Builder)
+            if (!$builder instanceof Builder) {
                 throw new InvalidArgumentException(
                     'If config array given directly, $builder must be an instance of Illuminate\Database\Eloquent\Builder.'
                 );
+            }
 
             $this->fields = $model;
             $this->b = $builder;
-
         } else {
-            if (! method_exists($model, 'getSearchableConfig'))
+            if (!method_exists($model, 'getSearchableConfig')) {
                 throw new InvalidArgumentException(
                     sprintf('Given %s is not an instance of Mrluke\Searcher\Contracts\Searchable.', $model)
                 );
+            }
 
             $this->fields = $model::getSearchableConfig();
             $this->b = $builder ?? $model::query();
@@ -195,7 +208,8 @@ class Searcher
     /**
      * Set options array as merged with global one.
      *
-     * @param  array $options
+     * @param array $options
+     *
      * @return self
      */
     public function setOptions(array $options) : self
@@ -208,7 +222,8 @@ class Searcher
     /**
      * Set inputs array for searching.
      *
-     * @param  array $inputs
+     * @param array $inputs
+     *
      * @return self
      */
     public function setQuery(array $inputs) : self
@@ -235,19 +250,16 @@ class Searcher
                 $val = is_null($op) ? $insert[0][2] : $insert[0][3];
 
                 $this->b->has($g['relation'], $op, (int) $val, $insert[0][4]);
-
             } elseif ($g['type'] == 'whereHas') {
-                $this->b->whereHas($g['relation'],  function($query) use ($insert) {
-                    foreach ($insert as $i)
-                    {
+                $this->b->whereHas($g['relation'], function ($query) use ($insert) {
+                    foreach ($insert as $i) {
                         $method = array_shift($i);
                         $query->$method(...array_values($i));
                     }
                 });
             } elseif ($g['type'] == 'whereNested') {
-                $this->b->whereNested(function($query) use ($insert) {
-                    foreach ($insert as $i)
-                    {
+                $this->b->whereNested(function ($query) use ($insert) {
+                    foreach ($insert as $i) {
                         $method = array_shift($i);
                         $query->$method(...array_values($i));
                     }
@@ -261,10 +273,11 @@ class Searcher
     /**
      * Compose where insert.
      *
-     * @param  array  $kind
-     * @param  mixed  $op
-     * @param  mixed  $val
-     * @param  string  $bool
+     * @param array  $kind
+     * @param mixed  $op
+     * @param mixed  $val
+     * @param string $bool
+     *
      * @return array
      */
     private function composeWhere(array $kind, $op, $val, string $bool) : array
@@ -275,16 +288,17 @@ class Searcher
         if ($method == 'whereLike') {
             $method = 'where';
 
-            $op = (! is_null($op) && $op == '<>') ? 'NOT LIKE' : 'LIKE';
-            $val = '%'. $val .'%';
-
+            $op = (!is_null($op) && $op == '<>') ? 'NOT LIKE' : 'LIKE';
+            $val = '%'.$val.'%';
         } elseif (in_array($method, ['whereIn', 'whereNull'])) {
-            $val = (! is_null($op) && $op == '<>') ? true : false;
+            $val = (!is_null($op) && $op == '<>') ? true : false;
             $op = $bool;
             unset($bool);
         }
 
-        if (is_null($op)) $op = '=';
+        if (is_null($op)) {
+            $op = '=';
+        }
 
         return compact('method', 'field', 'op', 'val', 'bool');
     }
@@ -299,9 +313,10 @@ class Searcher
         // For each of configurated filter fileds we process
         // request to check if there's one. In case of found
         // we process te sytanx.
-        foreach ($this->fields['filter'] as $k => $f)
-        {
-            if (! array_key_exists($k, $this->inputs)) continue;
+        foreach ($this->fields['filter'] as $k => $f) {
+            if (!array_key_exists($k, $this->inputs)) {
+                continue;
+            }
             // Now query like name=john,or+nick,ne+steve& is decoded.
             $input = $this->inputs[$k];
             // We need instruction of query's kind
@@ -310,7 +325,9 @@ class Searcher
 
             // If nesting type is 'has' the given inputs must
             // have only one definition for field.
-            if ($kind['type'] == 'has' && count(explode(self::SEP, $input)) > 1) continue;
+            if ($kind['type'] == 'has' && count(explode(self::SEP, $input)) > 1) {
+                continue;
+            }
 
             foreach (explode(self::SEP, $input) as $con) {
                 $c = explode(self::INT, $con);
@@ -318,7 +335,7 @@ class Searcher
 
                 // Check if there is logical connection operator
                 // and if comperison operator is valid.
-                if (count($c) > 1 && ($c[0] == 'or' OR $c[0] == 'and')) {
+                if (count($c) > 1 && ($c[0] == 'or' or $c[0] == 'and')) {
                     $bool = array_shift($c);
                 }
                 if (count($c) > 1 && array_key_exists($c[0], self::OPS)) {
@@ -331,7 +348,7 @@ class Searcher
             unset($kind['method']);
             unset($kind['field']);
 
-            if (! empty($wheres)) {
+            if (!empty($wheres)) {
                 $this->query[] = array_merge($kind, ['insert' => $wheres]);
             }
         }
@@ -353,12 +370,12 @@ class Searcher
 
             foreach ($this->fields['query'] as $f) {
                 foreach ($inputs as $i) {
-                    $wheres[] = ['where', $f, 'LIKE', '%'. $i .'%', 'or'];
+                    $wheres[] = ['where', $f, 'LIKE', '%'.$i.'%', 'or'];
                 }
             }
 
-            if (! empty($wheres)) {
-                $this->query[] = ['type' => 'whereNested', 'insert' => $wheres ];
+            if (!empty($wheres)) {
+                $this->query[] = ['type' => 'whereNested', 'insert' => $wheres];
             }
         }
     }
@@ -371,7 +388,7 @@ class Searcher
     private function decodeSort() : void
     {
         // There's no sort requirement -> skip
-        if (! empty($this->inputs['sort'])) {
+        if (!empty($this->inputs['sort'])) {
             // REST sorting is presented by fileds name
             // connected by comma.
             // Order type is determined by prefix of field name
@@ -379,15 +396,18 @@ class Searcher
             // 2) - for DESC
             $sorts = explode(self::SEP, $this->inputs['sort']);
 
-            foreach ($sorts as $s)
-            {
+            foreach ($sorts as $s) {
                 $op = substr($s, 0, 1);
                 $f = substr($s, 1);
                 // Check if model allows to sort by & operator is legit.
-                if (! array_key_exists($op, self::SOPS)) continue;
-                if (! array_key_exists($f, $this->fields['sort'])) continue;
+                if (!array_key_exists($op, self::SOPS)) {
+                    continue;
+                }
+                if (!array_key_exists($f, $this->fields['sort'])) {
+                    continue;
+                }
 
-                $this->query[] = ['type' => 'orderBy', 'insert' => [$this->fields['sort'][$f], self::SOPS[$op]] ];
+                $this->query[] = ['type' => 'orderBy', 'insert' => [$this->fields['sort'][$f], self::SOPS[$op]]];
             }
         }
     }
@@ -405,7 +425,8 @@ class Searcher
     /**
      * Return offset of pages.
      *
-     * @param  int|null  $default
+     * @param int|null $default
+     *
      * @return int
      */
     private function getLimit($default = null) : int
@@ -416,7 +437,8 @@ class Searcher
     /**
      * Return nesting set for query.
      *
-     * @param  string $field
+     * @param string $field
+     *
      * @return array
      */
     private function getNestingSet(string $field) : array
@@ -426,30 +448,30 @@ class Searcher
 
         if ($config[0] == 'has' && count($config) == 3) {
             $data = [
-                'type' => 'whereHas',
+                'type'     => 'whereHas',
                 'relation' => $c[1],
-                'method' => 'where',
-                'field' => $c[2],
+                'method'   => 'where',
+                'field'    => $c[2],
             ];
         } elseif ($config[0] == 'has' && count($config) == 2) {
             $data = [
-                'type' => 'has',
+                'type'     => 'has',
                 'relation' => $c[1],
-                'method' => null,
-                'field' => null,
+                'method'   => null,
+                'field'    => null,
 
             ];
         } elseif (in_array($config[0], ['in', 'like', 'null']) && count($config) == 2) {
             $data = [
-                'type' => 'whereNested',
-                'method' => 'where'. ucfirst($config[0]),
-                'field' => $c[1],
+                'type'   => 'whereNested',
+                'method' => 'where'.ucfirst($config[0]),
+                'field'  => $c[1],
             ];
         } elseif (count($config) == 1) {
             $data = [
-                'type' => 'whereNested',
+                'type'   => 'whereNested',
                 'method' => 'where',
-                'field' => $field
+                'field'  => $field,
             ];
         }
 
@@ -459,7 +481,8 @@ class Searcher
     /**
      * Return offset of pages.
      *
-     * @param  int  $deafult
+     * @param int $deafult
+     *
      * @return int
      */
     private function getOffset($default = 0) : int
@@ -486,7 +509,9 @@ class Searcher
     {
         // Check if is already processed is case of avoid
         // query duplication.
-        if ($this->built) return $this->b;
+        if ($this->built) {
+            return $this->b;
+        }
 
         // We apply to Builder query and others filters
         // in presented order for allowed & configurated.

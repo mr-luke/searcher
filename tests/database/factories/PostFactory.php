@@ -14,10 +14,9 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(Mrluke\Searcher\Tests\Models\Post::class, function (Faker $faker) {
-
     return [
         'user_id' => \Mrluke\Searcher\Tests\Models\User::inRandomOrder()->first()->id,
-        'title' => $faker->sentence(),
+        'title'   => $faker->sentence(),
         'content' => $faker->text(20000),
     ];
 });

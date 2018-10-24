@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Facade;
  * Laravel's facade file for package Searcher.
  *
  * @author    Łukasz Sitnicki (mr-luke)
+ *
  * @link      http://github.com/mr-luke/searcher
  *
  * @category  Laravel
- * @package   mr-luke/searcher
+ *
  * @license   MIT
  */
 class Searcher extends Facade

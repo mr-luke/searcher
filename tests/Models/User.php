@@ -4,7 +4,6 @@ namespace Mrluke\Searcher\Tests\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Mrluke\Searcher\Contracts\Searchable;
 
 class User extends Model implements Searchable
@@ -27,7 +26,7 @@ class User extends Model implements Searchable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public static function getSearchableConfig() : array
     {
