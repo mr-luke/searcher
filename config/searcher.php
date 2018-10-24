@@ -27,8 +27,8 @@ return [
     */
 
     'allow_filter' => true,
-    'allow_query' => true,
-    'allow_sort' => true,
+    'allow_query'  => true,
+    'allow_sort'   => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -41,6 +41,6 @@ return [
     */
 
     'auto_pagination' => false,
-    'limit' => 20,
+    'limit'           => 20,
 
 ];

@@ -6,10 +6,11 @@ namespace Mrluke\Searcher\Traits;
  * This trait allows to simplify configuration.
  *
  * @author    Łukasz Sitnicki (mr-luke)
+ *
  * @link      http://github.com/mr-luke/searcher
  *
  * @category  Laravel
- * @package   mr-luke/searcher
+ *
  * @license   MIT
  */
 trait Searchable
