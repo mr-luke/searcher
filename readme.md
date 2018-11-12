@@ -76,7 +76,14 @@ public static function getSearchableConfig() : array
 * `query` - this property defines fields allowed to query by, eg URL: `q=lorem`
 * `sort` - this property defines fields allowed to sort by, eg URL: `sort=+first,-age`
 
-`['first' => 'firstName']` is this example `first` is public key (URL) and `firstName` is an Eloquent attribute.
+`['first' => 'firstName']` in this example `first` is public key (URL) and `firstName` is an Eloquent attribute.
+You can be more accured and specify the way that query should be performed by using `dot notation`.
+
+* `['first' => 'like.firstName']` = WHERE LIKE statement
+* `['category' => 'in.category_id']` = WHERE IN statement
+* `['withOutMark' => 'null.mark']` = WHERE NULL statement
+* `['posts' => 'has.posts']` = Eloquent has() relation quering
+* `['rate' => 'has.reviews.rate']` = Eloquent whereHas() relation quering
 
 You can also use `Mrluke\Searcher\Traits\Searchable` that gives ability to read configuration from class property instead of function.
 
