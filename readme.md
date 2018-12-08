@@ -4,7 +4,6 @@ Searcher - Laravel Eloquent query Package.
 [![Latest Stable Version](https://poser.pugx.org/mr-luke/searcher/v/stable)](https://packagist.org/packages/mr-luke/searcher)
 [![Total Downloads](https://poser.pugx.org/mr-luke/searcher/downloads)](https://packagist.org/packages/mr-luke/searcher)
 [![License](https://poser.pugx.org/mr-luke/searcher/license)](https://packagist.org/packages/mr-luke/searcher)
-![StyleCI](https://github.styleci.io/repos/153353559/shield?branch=master)
 
 This package is responsible for converting OData(-like) URL Query into SQL query on top of the Eloquent Builder.
 
